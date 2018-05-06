@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Matching Game</string>
+<string name="tag_key">number</string>
 </resources>
