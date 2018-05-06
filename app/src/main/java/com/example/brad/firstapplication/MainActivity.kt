@@ -3,6 +3,7 @@ package com.example.brad.firstapplication
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import java.util.*
@@ -13,12 +14,13 @@ class MainActivity : AppCompatActivity() {
     private val random = Random()
     private val imageAmount = 16
     private var selected = mutableListOf<ImageView>()
+    private var images = mutableListOf<ImageView>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var images = mutableListOf<ImageView>()
+
         var image1 = findViewById(R.id.imageView1) as ImageView
         var image2 = findViewById(R.id.imageView2) as ImageView
         var image3 = findViewById(R.id.imageView3) as ImageView
@@ -35,8 +37,8 @@ class MainActivity : AppCompatActivity() {
         var image14 = findViewById(R.id.imageView14) as ImageView
         var image15 = findViewById(R.id.imageView15) as ImageView
         var image16 = findViewById(R.id.imageView16) as ImageView
+        var resetButton = findViewById<Button>(R.id.resetButton)
 
-        Log.d("debug", "adding imageviews to list")
         images.add(image1)
         images.add(image2)
         images.add(image3)
@@ -54,27 +56,94 @@ class MainActivity : AppCompatActivity() {
         images.add(image15)
         images.add(image16)
 
+        generateTags()
+
+        resetButton.setOnClickListener {
+            resetImages()
+            generateTags()
+            Toast.makeText(applicationContext, "Reset!", Toast.LENGTH_SHORT).show()
+        }
+
+        for(image in images){
+            image.setOnClickListener {
+               if(image.getTag(R.string.matched_tag) == 1 || image in selected){
+
+               }else{
+                   if(selected.size == 0){
+                       Log.d("debug", "size 0")
+                       selected.add(image)
+                       showImage(image)
+                   }else if(selected.size == 1){
+                       Log.d("debug", "size 1")
+                       selected.add(image)
+                       showImage(image)
+
+                       Log.d("debug", selected[0].getTag(R.string.tag_key).toString())
+                       Log.d("debug", selected[1].getTag(R.string.tag_key).toString())
+
+                       if(selected[0].getTag(R.string.tag_key) == image.getTag(R.string.tag_key)){
+                           selected[0].setTag(R.string.matched_tag, 1)
+                           image.setTag(R.string.matched_tag, 1)
+                           selected.clear()
+                           if(numberOfMatched() == 16){
+                               Toast.makeText(applicationContext, "You Won!", Toast.LENGTH_SHORT).show()
+                           }
+                       }
+                   }else if(selected.size == 2){
+                       Log.d("debug", "size 2")
+                       for(image in selected){
+                            image.setImageResource(R.drawable.hidden)
+                       }
+                       selected.clear()
+                       selected.add(image)
+                       showImage(image)
+                   }
+               }
+            }
+        }
+    }
+
+    fun showImage(image: ImageView){
+        when(image.getTag(R.string.tag_key).toString()) {
+            "1" -> image.setImageResource(R.drawable.e1)
+            "2" -> image.setImageResource(R.drawable.e2)
+            "3" -> image.setImageResource(R.drawable.e3)
+            "4" -> image.setImageResource(R.drawable.e4)
+            "5" -> image.setImageResource(R.drawable.e5)
+            "6" -> image.setImageResource(R.drawable.e6)
+            "7" -> image.setImageResource(R.drawable.e7)
+            "8" -> image.setImageResource(R.drawable.e8)
+        }
+    }
+
+    fun resetImages(){
+        for(image in images){
+            image.setImageResource(R.drawable.hidden)
+            image.setTag(R.string.matched_tag, 0)
+        }
+    }
+
+    fun numberOfMatched(): Int{
+        var x = 0
+        for(image in images){
+            if(image.getTag(R.string.matched_tag) == 1) x++
+        }
+        return x
+    }
+
+    fun resetUnmatched(){
+        for(image in images){
+            if(image.getTag(R.string.matched_tag) == 0) image.setImageResource(R.drawable.hidden)
+        }
+    }
+
+    fun generateTags(){
         var numbers = mutableListOf(1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8)
         Log.d("debug", "adding number tags to imageviews")
         for(image in images){
-            //TODO
             var k = random.nextInt(numbers.size)
             image.setTag(R.string.tag_key, numbers[k])
             numbers.removeAt(k)
-            image.setOnClickListener{
-                Log.d("debug", "clicked imageview")
-                Log.d("debug", image.getTag(R.string.tag_key).toString())
-                when(image.getTag(R.string.tag_key).toString()){
-                    "1" -> image.setImageResource(R.drawable.e1)
-                    "2" -> image.setImageResource(R.drawable.e2)
-                    "3" -> image.setImageResource(R.drawable.e3)
-                    "4" -> image.setImageResource(R.drawable.e4)
-                    "5" -> image.setImageResource(R.drawable.e5)
-                    "6" -> image.setImageResource(R.drawable.e6)
-                    "7" -> image.setImageResource(R.drawable.e7)
-                    "8" -> image.setImageResource(R.drawable.e8)
-                }
-            }
         }
     }
 }
