@@ -58,8 +58,9 @@ class MainActivity : AppCompatActivity() {
         Log.d("debug", "adding number tags to imageviews")
         for(image in images){
             //TODO
-            var k
-            image.setTag(R.string.tag_key, k)
+            var k = random.nextInt(numbers.size)
+            image.setTag(R.string.tag_key, numbers[k])
+            numbers.removeAt(k)
             image.setOnClickListener{
                 Log.d("debug", "clicked imageview")
                 Log.d("debug", image.getTag(R.string.tag_key).toString())
