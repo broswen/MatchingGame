@@ -91,8 +91,8 @@ class MainActivity : AppCompatActivity() {
                        }
                    }else if(selected.size == 2){
                        Log.d("debug", "size 2")
-                       for(image in selected){
-                            image.setImageResource(R.drawable.hidden)
+                       for(imagez in selected){
+                            imagez.setImageResource(R.drawable.hidden)
                        }
                        selected.clear()
                        selected.add(image)
